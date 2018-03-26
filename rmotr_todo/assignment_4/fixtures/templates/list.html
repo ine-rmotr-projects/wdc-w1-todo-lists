@@ -5,7 +5,7 @@
 {% block list_table %}
 		<table id="id_list_table">
 			{% for item in list.item_set.all %}
-				<tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
+				<tr><td><form method="post" action="{% url 'delete_item' list.id item.id %}">{% csrf_token %}<a href="javascript:;" onclick="parentNode.submit();">[x]</a></form> {{ item.text }}</td></tr>
 			{% endfor %}
 		</table>
 {% endblock %}

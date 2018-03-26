@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from todo.models import Item, List
 from todo.forms import ItemForm
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def home(request):
@@ -20,11 +18,7 @@ def new_list(request):
 
 
 def view_list(request, list_id):
-    try:
-        list_ = List.objects.get(id=list_id)
-    except ObjectDoesNotExist:
-        return HttpResponseNotFound()
-
+    list_ = List.objects.get(id=list_id)
     form = ItemForm()
 
     if request.method == 'POST':
@@ -33,13 +27,3 @@ def view_list(request, list_id):
             form.save(list_=list_)
             return(redirect(list_))
     return render(request, 'list.html', {'list': list_, 'form': form})
-
-def delete_item(request, list_id, item_id):
-    try:
-        list_ = List.objects.get(id=list_id)
-        item = Item.objects.get(id=item_id)
-    except ObjectDoesNotExist:
-        return HttpResponseNotFound()
-    if request.method == 'POST':
-        item.delete()
-    return redirect(list_)

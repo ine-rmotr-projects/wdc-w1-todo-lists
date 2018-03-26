@@ -34,12 +34,14 @@ def view_list(request, list_id):
             return(redirect(list_))
     return render(request, 'list.html', {'list': list_, 'form': form})
 
-def delete_item(request, list_id, item_id):
+def view_item(request, list_id, item_id):
     try:
         list_ = List.objects.get(id=list_id)
         item = Item.objects.get(id=item_id)
     except ObjectDoesNotExist:
         return HttpResponseNotFound()
-    if request.method == 'POST':
+    if request.method not in ('DELETE',):
+        return HttpResponseBadRequest()
+    if item is not None:
         item.delete()
     return redirect(list_)

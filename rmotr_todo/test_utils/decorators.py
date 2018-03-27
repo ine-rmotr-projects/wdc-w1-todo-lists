@@ -1,3 +1,5 @@
+from django.test import modify_settings, override_settings
+
 PASS = True
 FAIL = False
 
@@ -9,21 +11,21 @@ class rmotr_tester(object):
     def __call__(self, fn):
         self.fn = fn
 
+        @override_settings(ROOT_URLCONF=self.root_urlconf())
+        @modify_settings(INSTALLED_APPS=self.installed_apps())
         def wrapper(*args, **kwargs):
-            fn_self = args[0]
-            with fn_self.modify_settings(INTSTALLED_APPS=self.installed_apps()):
-                with fn_self.settings(ROOT_URLCONF=self.root_urlconf()):
-                    if self.test_mode is PASS:
-                        return self.fn(*args, **kwargs)
-                    test_failed_to_fail = False
-                    try:
-                        result = self.fn(*args, **kwargs)
-                        test_failed_to_fail = True
-                    except AssertionError:
-                        pass
-                    if test_failed_to_fail:
-                        raise AssertionError('Test {} failed to fail.'.format(self.fn.__name__))
 
+            if self.test_mode is PASS:
+                return self.fn(*args, **kwargs)
+            test_failed_to_fail = False
+            try:
+                self.fn(*args, **kwargs)
+                test_failed_to_fail = True
+            except AssertionError:
+                pass
+            if test_failed_to_fail:
+                err = 'Test {} failed to fail.'
+                raise AssertionError(err.format(self.fn.__name__))
 
         return wrapper
 
@@ -39,8 +41,3 @@ class rmotr_tester(object):
                   self.fn.__name__ + '_')
         module += 'pass' if self.test_mode == PASS else 'fail'
         return module
-
-
-'''
-@override_settings(ROOT_URLCONF='assignment_1.fixtures.url_overrides.test_home_page_renders_using_template_pass')
-'''

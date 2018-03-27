@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>To-Do lists</title>
+	</head>
+	<body>
+	<div style="text-align: center;">
+					<h1>Login</h1>
+					<form method="POST" action='{% url 'login' %}'>
+						{{ form.as_p }}
+						{% csrf_token %}
+						<input type="submit" value="Login">
+						{% if errors %}
+							<div class="form-group has-error">
+								<span class="help-block">{{ errors }}</span>
+							</div>
+						{% endif %}
+					</form>
+	</div>
+	</body>
+</html>

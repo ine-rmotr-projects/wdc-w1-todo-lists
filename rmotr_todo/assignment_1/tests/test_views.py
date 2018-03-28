@@ -1,9 +1,6 @@
 from todo.tests import test_views as views_tests
 from test_utils.decorators import rmotr_tester, PASS, FAIL
 
-print('name: {}'.format(__name__))
-print('file: {}'.format(__file__))
-
 
 class HomePageTestsPass(views_tests.HomePageTest):
 

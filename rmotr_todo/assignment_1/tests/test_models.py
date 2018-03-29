@@ -16,6 +16,6 @@ class ItemModelTestPass(models_tests.ItemModelTest):
 class ItemModelTestFail(models_tests.ItemModelTest):
 
     @rmotr_tester(FAIL)
-    @mock.patch("todo.tests.test_models.Item", fail_item)
+    @mock.patch("todo.tests.test_models.Item", fail_item())
     def test_saving_and_retrieving_items(self):
         super(ItemModelTestFail, self).test_saving_and_retrieving_items()

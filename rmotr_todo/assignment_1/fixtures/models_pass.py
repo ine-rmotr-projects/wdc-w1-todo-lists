@@ -10,6 +10,8 @@ class Item(object):
     def __init__(self, *args, **kwargs):
         self.__class__._COUNT += 1
         self.__class__._OBJECTS.append(self)
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def save(self):
         pass

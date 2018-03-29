@@ -1,6 +1,7 @@
-from unittest.mock import MagicMock
+from test_utils.mocked_models import Item
 
-Item = MagicMock()
-Item.objects = MagicMock()
-Item.objects.count = MagicMock(return_value=0)
-Item.objects.create = MagicMock(return_value=None)
+
+class ItemNoCount(Item):
+
+    def _count(cls):
+        return 0

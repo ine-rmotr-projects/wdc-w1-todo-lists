@@ -1,7 +1,9 @@
 from unittest.mock import Mock
 from django.urls import reverse
 
+
 class CleanObjects(object):
+
     def __enter__(self):
         Item.clean()
         List.clean()
@@ -111,6 +113,9 @@ class MockIterator(object):
         raise StopIteration
 
     next = __next__
+
+    def __getitem__(self, idx):
+        return self._iterable[idx]
 
 
 class ListObject(MockObject):

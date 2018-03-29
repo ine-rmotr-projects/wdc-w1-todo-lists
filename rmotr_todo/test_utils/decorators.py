@@ -53,7 +53,10 @@ class rmotr_tester(object):
 
     def root_urlconf(self):
         module = (self.get_assignment_module() +
-                  '.fixtures.url_overrides.' +
-                  self.fn.__name__ + '_')
-        module += 'pass' if self.test_mode == PASS else 'fail'
+                  '.fixtures.url_overrides.')
+        if self.test_mode == PASS:
+            module += 'pass'
+        if self.test_mode == FAIL:
+            module += self.fn.__name__
+
         return module

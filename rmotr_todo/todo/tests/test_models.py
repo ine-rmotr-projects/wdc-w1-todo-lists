@@ -1,20 +1,17 @@
 from django.test import TestCase
-from todo.models import Item
+from todo.models import Item, List
 
 
-class ItemModelTest(TestCase):
+class ItemAndListModelTest(TestCase):
 
-    def test_saving_and_retrieving_items(self):
-        first_item = Item()
-        first_item.text = "The first item ever"
-        first_item.save()
+    def test_item_saves_to_list(self):
+        list_ = List.objects.create()
+        item = Item(text="Hello there")
+        item.list = list_
+        item.save()
+        self.assertIn(item, list_.item_set.all())
 
-        second_item = Item()
-        second_item.text = "The second item"
-        second_item.save()
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-
-        self.assertEqual(saved_items[0], first_item)
-        self.assertEqual(saved_items[1], second_item)
+    def test_get_absolute_url(self):
+        list_ = List.objects.create()
+        self.assertEqual(list_.get_absolute_url(),
+                         '/lists/{}/'.format(list_.id))

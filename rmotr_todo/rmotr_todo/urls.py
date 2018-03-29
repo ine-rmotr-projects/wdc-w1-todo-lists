@@ -22,4 +22,6 @@ from todo import views
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('lists/<list_id>/', views.view_list, name='view_list'),
+
 ]

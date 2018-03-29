@@ -3,6 +3,12 @@ from django.urls import reverse
 
 
 class CleanObjects(object):
+    """
+    Context manager to ensure Items and Lists are cleaned
+    before and after tests.
+
+    Simulates database wipes between tests
+    """
 
     def __enter__(self):
         Item.clean()
@@ -13,6 +19,7 @@ class CleanObjects(object):
         List.clean()
 
 class MockObject(object):
+    """ Mocks out a single item from a Django model """
 
     def __init__(self, *args, **kwargs):
         for k, v, in kwargs.items():
@@ -33,6 +40,11 @@ class MockObject(object):
 
 
 class MockModel(object):
+    """
+    Mocks out a Django Model
+    When using w/ patch use ._get() to properly simulate
+    the way Django treats Models
+    """
     _ACTIVE = None
 
     def __init__(self, **kwargs):
@@ -50,6 +62,7 @@ class MockModel(object):
 
     def _clean(self):
         self.items = []
+        # This is a messy hack to create thi .objects interface
         self.objects = MockIterator(self.items)
         self.objects.create = self._create
         self.objects.first = self._getfirst
@@ -94,6 +107,11 @@ class MockModel(object):
 
 
 class MockIterator(object):
+    """
+    Mocks out the iterable parts of the .objects
+    interface for a Django Model
+    """
+
     def __init__(self, iterable):
         self._iterable = iterable
         self._counter = 0

@@ -18,6 +18,7 @@ class rmotr_tester(object):
         return self.no_overrides()
 
     def override_urls(self):
+        """ Overrides django's urls to our own test-specific paths """
         @override_settings(ROOT_URLCONF=self.root_urlconf())
         @modify_settings(INSTALLED_APPS=self.installed_apps())
         def wrapper(*args, **kwargs):
@@ -49,14 +50,16 @@ class rmotr_tester(object):
         return self.fn.__module__.split('.')[0]
 
     def installed_apps(self):
+        """ adds assignment fixtures directory to django installed apps """
         return {'append': self.get_assignment_module() + '.fixtures'}
 
     def root_urlconf(self):
+        """ Generate location for custom url config """
         module = (self.get_assignment_module() +
                   '.fixtures.url_overrides.')
-        if self.test_mode == PASS:
+        if self.test_mode is PASS:
             module += 'pass'
-        if self.test_mode == FAIL:
+        if self.test_mode is FAIL:
             module += self.fn.__name__
 
         return module

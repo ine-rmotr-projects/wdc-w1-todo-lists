@@ -7,17 +7,19 @@ from types import SimpleNamespace
 
 class CleanObjects(object):
     """
-    Context manager to ensure Items and Lists are cleaned
+    Functions to ensure Items and Lists are cleaned
     before and after tests.
 
     Simulates database wipes between tests
     """
 
-    def __enter__(self):
+    @classmethod
+    def setUp(cls):
         Item.clean()
         List.clean()
 
-    def __exit__(self, *args):
+    @classmethod
+    def tearDown(cls, *args):
         Item.clean()
         List.clean()
 

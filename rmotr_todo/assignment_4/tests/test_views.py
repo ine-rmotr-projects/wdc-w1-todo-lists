@@ -10,11 +10,14 @@ class HomePageTestPass(views_tests.HomePageTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(HomePageTestPass, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(HomePageTestPass, self).tearDown()
 
     @rmotr_tester(PASS)
     def test_home_page_renders_using_template(self):
@@ -31,11 +34,14 @@ class HomePageTestFail(views_tests.HomePageTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(HomePageTestFail, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(HomePageTestFail, self).tearDown()
 
     @rmotr_tester(FAIL)
     def test_home_page_renders_using_template(self):
@@ -51,11 +57,14 @@ class NewListTestPass(views_tests.NewListTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(NewListTestPass, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(NewListTestPass, self).tearDown()
 
     @rmotr_tester(PASS)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
@@ -84,11 +93,14 @@ class NewListTestFail(views_tests.NewListTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(NewListTestFail, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(NewListTestFail, self).tearDown()
 
     @rmotr_tester(FAIL)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
@@ -115,11 +127,14 @@ class ListViewTestPass(views_tests.ListViewTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(ListViewTestPass, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(ListViewTestPass, self).tearDown()
 
     @rmotr_tester(PASS)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
@@ -180,11 +195,14 @@ class ListViewTestFail(views_tests.ListViewTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects().setUp()
         super(ListViewTestFail, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects().tearDown()
+        super(ListViewTestFail, self).tearDown()
 
     @rmotr_tester(FAIL)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
@@ -247,11 +265,14 @@ class ItemEndpointTestPass(views_tests.ItemEndpointTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(ItemEndpointTestPass, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(ItemEndpointTestPass, self).tearDown()
 
     @rmotr_tester(PASS)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
@@ -276,11 +297,14 @@ class ItemEndpointTestFail(views_tests.ItemEndpointTest):
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())
     @patch('todo.tests.test_views.List', mocked_models.List._get())
     def setUp(self):
-        mocked_models.CleanObjects().__enter__()
+        mocked_models.CleanObjects.setUp()
         super(ItemEndpointTestFail, self).setUp()
 
+    @patch('todo.tests.test_views.Item', mocked_models.Item._get())
+    @patch('todo.tests.test_views.List', mocked_models.List._get())
     def tearDown(self):
-        mocked_models.CleanObjects().__exit__()
+        mocked_models.CleanObjects.tearDown()
+        super(ItemEndpointTestFail, self).tearDown()
 
     @rmotr_tester(FAIL)
     @patch('todo.tests.test_views.Item', mocked_models.Item._get())

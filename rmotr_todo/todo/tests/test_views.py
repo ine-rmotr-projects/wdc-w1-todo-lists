@@ -110,7 +110,6 @@ class ItemEndpointTest(TestCase):
         self.assertEqual(Item.objects.count(), 1)
         response = self.client.get('/lists/{}/item/{}/delete'.format(self.list_.id,
                                                                      self.item.id))
-
         self.assertEqual(Item.objects.count(), 1)
 
     def test_raise_404_on_item_not_found(self):

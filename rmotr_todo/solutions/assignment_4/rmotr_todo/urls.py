@@ -23,5 +23,5 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('lists/<list_id>/', views.view_list, name='view_list'),
-
+    path('lists/<list_id>/item/<item_id>/delete', views.delete_item, name='delete_item'),
 ]

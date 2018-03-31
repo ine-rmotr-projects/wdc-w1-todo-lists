@@ -77,8 +77,46 @@ class ListViewTest(TestCase):
         list_ = List.objects.create()
         response = self.client.post('/lists/{}/'.format(list_.id),
                                     data={'text': ''})
-        #import pdb; pdb.set_trace()
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
+
+    def test_raise_404_on_list_not_found(self):
+        list_ = List.objects.create()
+        response = self.client.get('/lists/{}1/'.format(list_.id))
+        self.assertEqual(response.status_code, 404)
+
+    def test_shows_delete_button(self):
+        list_ = List.objects.create()
+        item = Item.objects.create(list=list_, text="Hello there")
+
+        response = self.client.get('/lists/{}/'.format(list_.id))
+        delete_url = "/lists/{}/item/{}/delete".format(list_.id, item.id)
+
+        self.assertContains(response, delete_url)
+
+
+class ItemEndpointTest(TestCase):
+
+    def setUp(self):
+        self.list_ = List.objects.create()
+        self.item = Item.objects.create(list=self.list_, text='Hello there')
+
+    def test_delete_item(self):
+        self.assertEqual(Item.objects.count(), 1)
+        response = self.client.post('/lists/{}/item/{}/delete'.format(self.list_.id,
+                                                                      self.item.id))
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_does_not_delete_if_not_post(self):
+        self.assertEqual(Item.objects.count(), 1)
+        response = self.client.get('/lists/{}/item/{}/delete'.format(self.list_.id,
+                                                                     self.item.id))
+
+        self.assertEqual(Item.objects.count(), 1)
+
+    def test_raise_404_on_item_not_found(self):
+        response = self.client.post('/lists/{}/item/{}1/delete'.format(self.list_.id,
+                                                                 self.item.id))
+        self.assertEqual(response.status_code, 404)
 
 
 class NewListTest(TestCase):

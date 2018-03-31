@@ -163,6 +163,10 @@ class ItemObject(MockObject):
         if hasattr(self, 'list'):
             self.list._append(self)
 
+    def delete(self):
+        self.list._items.remove(self)
+        Item._get().items.remove(self)
+
     def full_clean(self):
         if self.__class__._DEBUG_NO_DUPLICATES_ACROSS_LISTS:
             for item in Item._get().items:

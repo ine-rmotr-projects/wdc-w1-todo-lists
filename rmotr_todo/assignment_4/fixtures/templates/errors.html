@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>To-Do lists</title>
+	</head>
+	<body>
+	<div style="text-align: center;">
+					<h1>My To-Do List</h1>
+					<form method="POST" action='{% block form_action %}{% endblock %}'>
+						{{ form.text }}
+						{% csrf_token %}
+							<div class="form-group has-error">
+								<span class="help-block">Blank list items are not permitted</span>
+							</div>
+					</form>
+	</div>
+	{% block list_table %}
+	{% endblock %}
+	</body>
+</html>

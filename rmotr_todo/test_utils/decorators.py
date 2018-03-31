@@ -60,7 +60,7 @@ class rmotr_tester(object):
 
     def installed_apps(self):
         """ adds assignment fixtures directory to django installed apps """
-        return {'append': self.get_assignment_module() + '.fixtures'}
+        return {'prepend': self.get_assignment_module() + '.fixtures'}
 
     def root_urlconf(self):
         """ Generate location for custom url config """

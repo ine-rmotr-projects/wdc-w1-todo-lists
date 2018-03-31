@@ -102,29 +102,13 @@ class ListViewTest(TestCase):
 
         self.assertContains(response, delete_url)
 
-
     def test_page_uses_item_form(self):
         response = self.client.get(self.list_url)
         self.assertIsInstance(response.context['form'], ItemForm)
 
-    def test_add_item(self):
-        response = self.client.post(self.list_url, data={'text': 'Buy milk'})
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'Buy milk')
-
     def test_redirects_after_post(self):
         response = self.client.post(self.list_url, data={'text': 'Buy milk'})
         self.assertRedirects(response, self.list_url)
-
-    def test_invalid_item_renders_list(self):
-        response = self.client.post(self.list_url, data={'text': ''})
-        self.assertTemplateUsed(response, 'list.html')
-
-    def test_invalid_item_shows_error(self):
-        response = self.client.post(self.list_url, data={'text': ''})
-        self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
     def test_raise_403_error_if_wrong_user(self):
         other_user = User.objects.create_user('yoda',

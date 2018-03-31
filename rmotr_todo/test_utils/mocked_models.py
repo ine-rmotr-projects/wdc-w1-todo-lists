@@ -148,6 +148,9 @@ class ListObject(MockObject):
         args = [self.id]
         return reverse('view_list', args=args)
 
+    def owned_by(self, user):
+        return getattr(self, 'user', None) == user
+
 
 class List(MockModel):
     ITEM_CLASS = ListObject
@@ -160,6 +163,9 @@ class ItemObject(MockObject):
         super(ItemObject, self).__init__(*args, **kwargs)
         if not DEBUG_OVERRIDE_LIST_SAVE:
             self.save()
+
+    def owned_by(self, user):
+        return self.list.owned_by(user)
 
     def save(self):
         if hasattr(self, 'list'):

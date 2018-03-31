@@ -1,11 +1,18 @@
 from django.db import models
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
 
 class List(models.Model):
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def get_absolute_url(self):
         return reverse('view_list', args=[self.id])
+
+    def owned_by(self, user):
+        return user == self.user
 
 
 class Item(models.Model):
@@ -18,3 +25,6 @@ class Item(models.Model):
 
     def __str__(self):
         return self.text
+
+    def owned_by(self, user):
+        return user == self.list.user

@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 
 from todo.models import Item, List
 from todo.forms import ItemForm, EMPTY_ITEM_ERROR
@@ -16,7 +17,8 @@ class ItemFormTest(TestCase):
         self.assertEqual(form.errors['text'], [EMPTY_ITEM_ERROR])
 
     def test_form_save_handles_saving_to_a_list(self):
-        list_ = List.objects.create()
+        user = User.objects.create_user('obiwan', 'kenobi@jedi.org', 'hellothere')
+        list_ = List.objects.create(user=user)
         form = ItemForm(data={'text': 'Hello there'})
         new_item = form.save(list_=list_)
         self.assertEqual(new_item, Item.objects.first())

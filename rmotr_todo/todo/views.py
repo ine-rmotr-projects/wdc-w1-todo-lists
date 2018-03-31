@@ -1,25 +1,30 @@
 from django.shortcuts import render, redirect
 from todo.models import Item, List
+from todo.forms import ItemForm
 
 
 def home(request):
-    if request.method == 'POST':
-        item = Item(text=request.POST.get('item_text', None))
-        item.save()
-    return render(request, 'home.html', {'items': Item.objects.all()})
+    return render(request, 'home.html', {'form': ItemForm()})
+
 
 def new_list(request):
-    list_ = List.objects.create()
-    item = Item(text=request.POST.get('item_text', None),
-                list=list_)
-    item.save()
-    return redirect(list_)
+    form = ItemForm(data=request.POST)
+    if form.is_valid():
+        list_ = List.objects.create()
+        Item.objects.create(text=request.POST['text'], list=list_)
+        return redirect(list_)
+    else:
+        return render(request, 'home.html', {'form': form})
+
 
 def view_list(request, list_id):
     list_ = List.objects.get(id=list_id)
+    form = ItemForm()
+
     if request.method == 'POST':
-        item = Item(text=request.POST.get('item_text', None),
-                    list=list_)
-        item.save()
-        return redirect(list_)
-    return render(request, 'list.html', {'list': list_})
+        form = ItemForm(data=request.POST)
+        if form.is_valid():
+            form.save(list_=list_)
+            return(redirect(list_))
+    import pdb; pdb.set_trace()
+    return render(request, 'list.html', {'list': list_, 'form': form})

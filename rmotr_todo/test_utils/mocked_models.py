@@ -1,5 +1,8 @@
-from unittest.mock import Mock
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+from django.utils.html import escape
+from django.forms.utils import ErrorDict
+from types import SimpleNamespace
 
 
 class CleanObjects(object):
@@ -18,6 +21,7 @@ class CleanObjects(object):
         Item.clean()
         List.clean()
 
+
 class MockObject(object):
     """ Mocks out a single item from a Django model """
 
@@ -28,7 +32,7 @@ class MockObject(object):
 
     @property
     def item_set(self):
-        i_s =  MockIterator(self._items)
+        i_s = MockIterator(self._items)
         i_s.all = self._all
         return i_s
 
@@ -140,8 +144,7 @@ class ListObject(MockObject):
 
     def get_absolute_url(self):
         args = [self.id]
-        rev =  reverse('view_list', args=args)
-        return rev
+        return reverse('view_list', args=args)
 
 
 class List(MockModel):
@@ -149,14 +152,97 @@ class List(MockModel):
 
 
 class ItemObject(MockObject):
-    def __init__(self, *args, **kwargs):
+    _DEBUG_NO_DUPLICATES_ACROSS_LISTS = False
+
+    def __init__(self, DEBUG_OVERRIDE_LIST_SAVE=False, *args, **kwargs):
         super(ItemObject, self).__init__(*args, **kwargs)
-        self.save()
+        if not DEBUG_OVERRIDE_LIST_SAVE:
+            self.save()
 
     def save(self):
         if hasattr(self, 'list'):
             self.list._append(self)
 
+    def full_clean(self):
+        if self.__class__._DEBUG_NO_DUPLICATES_ACROSS_LISTS:
+            for item in Item._get().items:
+                if item is not self and item.text == self.text:
+                    raise ValidationError('Duplicate items not allowed')
+        if getattr(self, 'text', '') == '':
+            raise ValidationError('Field "text" cannot be blank')
+        if hasattr(self, 'list'):
+            for item in self.list.item_set.all():
+                if item is not self and item.text == self.text:
+                    raise ValidationError('Duplicate items not allowed')
+
 
 class Item(MockModel):
     ITEM_CLASS = ItemObject
+
+
+class MockForm(object):
+    def __init__(self, **kwargs):
+        self.data = {}
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __getitem__(self, idx):
+        return self.WIDGETS[idx]
+
+    def as_p(self):
+        result = ""
+        for name, widget in self.WIDGETS.items():
+            result += widget.as_p(name=name)
+        return result
+
+    def is_valid(self):
+        model = self.MODEL_CLASS._get()
+        item = model(**self.data)
+        try:
+            item.full_clean()
+            valid = True
+        except ValidationError:
+            valid = False
+        model.items.remove(item)
+        return valid
+
+
+class MockFormField(object):
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+
+class TextInput(MockFormField):
+    def as_p(self, name):
+        form_input = '<input name="{}" id="id_{}" placeholder="{}" />'
+        return form_input.format(escape(name), escape(name),
+                                 escape(self.attrs['placeholder']))
+
+
+class ItemForm(MockForm):
+    _DEBUG_DO_NOT_SAVE_TO_LIST = False
+    MODEL_CLASS = Item
+    FIELDS = ('text',)
+    WIDGETS = {'text': TextInput(attrs={'placeholder':
+                                        'Enter a to-do item.'})}
+    error_message = {'text': {'required':
+                              "Blank list items are not permitted"}}
+
+    def __init__(self, **kwargs):
+        if 'data' in kwargs:
+            kwargs['data'] = dict(kwargs['data'])
+            text = kwargs['data'].get('text', '')
+            if type(text) == list:
+                text = text[0]
+            kwargs['data']['text'] = text
+        super(ItemForm, self).__init__(**kwargs)
+
+    def save(self, list_):
+        if self.is_valid():
+            if self._DEBUG_DO_NOT_SAVE_TO_LIST:
+                item = Item._get()(list=None, DEBUG_OVERRIDE_LIST_SAVE=True, **self.data)
+                return item
+            item = Item._get()(list=list_, **self.data)
+            item.save()
+            return item

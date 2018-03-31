@@ -37,10 +37,10 @@ class ListViewTest(TestCase):
 
         response = self.client.get("/lists/{}/".format(correct_list.id))
 
-        self.assertContains(response, correct_1.text)
-        self.assertContains(response, correct_2.text)
-        self.assertNotContains(response, incorrect_1.text)
-        self.assertNotContains(response, incorrect_2.text)
+        self.assertContains(response, escape(correct_1.text))
+        self.assertContains(response, escape(correct_2.text))
+        self.assertNotContains(response, escape(incorrect_1.text))
+        self.assertNotContains(response, escape(incorrect_2.text))
 
     def test_passes_correct_list_to_template(self):
         other_list = List.objects.create()

@@ -1,13 +1,17 @@
 from django.test import modify_settings, override_settings
+from django.core.exceptions import ValidationError
 
 PASS = True
 FAIL = False
 
 
 class rmotr_tester(object):
-    def __init__(self, test_mode, url_override=True):
+    def __init__(self, test_mode,
+                 url_override=True,
+                 allow_validation_error=False):
         self.test_mode = test_mode
         self.url_override = url_override
+        self.allow_validation_error = allow_validation_error
 
     def __call__(self, fn):
         self.fn = fn
@@ -42,6 +46,11 @@ class rmotr_tester(object):
             test_failed_to_fail = True
         except AssertionError:
             pass
+        except ValidationError as err:
+            if self.allow_validation_error:
+                pass
+            else:
+                raise err
         if test_failed_to_fail:
             err = 'Test {} failed to fail.'
             raise AssertionError(err.format(self.fn.__name__))
@@ -58,7 +67,12 @@ class rmotr_tester(object):
         module = (self.get_assignment_module() +
                   '.fixtures.url_overrides.')
         if self.test_mode is PASS:
-            module += 'pass'
+            try:
+                mod = module + self.fn.__name__ + '_pass'
+                __import__(mod)
+                module = mod
+            except ImportError:
+                module += 'pass'
         if self.test_mode is FAIL:
             module += self.fn.__name__
 

@@ -93,7 +93,7 @@ def view_list_add_to_existing(request, list_id):
             return(redirect(list_))
     return render(request, 'list.html', {'list': list_, 'form': form})
 
-def view_list_with_errors(request, list_id):
+def show_errors(request, *args, **kwargs):
     return render(request, 'errors.html')
 
 

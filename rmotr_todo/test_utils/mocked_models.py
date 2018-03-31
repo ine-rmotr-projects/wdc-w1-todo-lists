@@ -237,6 +237,7 @@ class ItemForm(MockForm):
                 text = text[0]
             kwargs['data']['text'] = text
         super(ItemForm, self).__init__(**kwargs)
+        self.errors = {'text': [self.error_message['text']['required']]}
 
     def save(self, list_):
         if self.is_valid():

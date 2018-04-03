@@ -69,7 +69,7 @@ class ItemFormTestFail(forms_tests.ItemFormTest):
     @mock.patch('todo.tests.test_forms.ItemForm', mocked_models.ItemForm)
     def test_form_renders_item_text_input(self):
         """ Unchanged from previous assignment """
-         with mock.patch('test_utils.mocked_models.TextInput.as_p') as fake_p:
+        with mock.patch('test_utils.mocked_models.TextInput.as_p') as fake_p:
             fake_p.return_value = '<input name="nope" id="no-way" placeholder="Break your test" />'
             super(ItemFormTestFail, self).test_form_renders_item_text_input()
 

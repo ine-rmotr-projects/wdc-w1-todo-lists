@@ -19,6 +19,12 @@ class ItemModelTestPass(models_tests.ItemModelTest):
     @rmotr_tester(PASS)
     @patch("todo.tests.test_models.Item", mocked_models.Item._get())
     def test_saving_and_retrieving_items(self):
+        """
+        Should test that Item model is saving correctly and that
+        item text is saved as a 'text' attribute.
+        See Item.objects.all: https://docs.djangoproject.com/en/2.0/ref/models/querysets/#all
+        Also see .count(): https://docs.djangoproject.com/en/2.0/ref/models/querysets/#count
+        """
         super(ItemModelTestPass, self).test_saving_and_retrieving_items()
 
 
@@ -37,6 +43,11 @@ class ItemModelTestFail(models_tests.ItemModelTest):
     @rmotr_tester(FAIL)
     @patch("todo.tests.test_models.Item", mocked_models.Item._get())
     def test_saving_and_retrieving_items(self):
+        """
+        Test should fail if the item count is not increased after
+        an item is saved
+        """
+
         with patch('test_utils.mocked_models.MockIterator') as fake_iterator:
             fake_iterator.count.return_value = 0
             fake_iterator.__getitem__.return_value = mocked_models.ItemObject()
